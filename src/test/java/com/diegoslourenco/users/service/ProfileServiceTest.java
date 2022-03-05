@@ -13,10 +13,12 @@ import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
@@ -80,4 +82,31 @@ public class ProfileServiceTest {
 
         assertThat(result).usingRecursiveComparison().isEqualTo(expected);
     }
+
+    @Test
+    public void getByIdTest() {
+
+        // Given
+        Profile profile = MockUtils.mockProfile(1L, MockUtils.PROFILE_NAME_ADMIN);
+        ProfileDTO expected = MockUtils.mockProfileDTO();
+
+        // When
+        when(profileRepository.findById(1L)).thenReturn(Optional.of(profile));
+
+        // Then
+        ProfileDTO result = profileService.getById(1L);
+
+        assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void getByIdNotFoundTest() {
+
+        // When
+        when(profileRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Then
+        ProfileDTO result = profileService.getById(1L);
+    }
+
 }
