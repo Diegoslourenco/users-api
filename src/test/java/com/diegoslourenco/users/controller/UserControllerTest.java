@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -335,6 +336,44 @@ public class UserControllerTest {
         // Then
         MvcResult mvcResult = mockMvc
                 .perform(put(uri).contentType(MediaType.APPLICATION_JSON_VALUE).content(userMocked))
+                .andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        String result = mvcResult.getResponse().getContentAsString();
+
+        assertThat(status).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(result).usingDefaultComparator().isEqualTo(expected);
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+
+        // Given
+        String uri = "/users/1";
+
+        // Then
+        MvcResult mvcResult = mockMvc
+                .perform(delete(uri).contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+
+        assertThat(status).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    public void deleteForNotFoundTest() throws Exception {
+
+        // Given
+        String uri = "/users/1";
+        String expected = MockUtils.mockString("src/test/resources/json/user/error/userNotFound.json");
+
+        // When
+        doThrow(new UserNotFoundException(1)).when(userService).delete(any());
+
+        // Then
+        MvcResult mvcResult = mockMvc
+                .perform(delete(uri).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andReturn();
 
         int status = mvcResult.getResponse().getStatus();

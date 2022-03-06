@@ -27,6 +27,7 @@ import java.util.Optional;
 import static com.diegoslourenco.users.utils.MockUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -199,8 +200,6 @@ public class UserServiceTest {
 
         // When
         when(profileService.getById(any())).thenReturn(profileMocked);
-        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.empty());
-        when(userRepository.getByEmail(userDTO.getEmail())).thenReturn(Optional.empty());
         when(userRepository.findById(any())).thenReturn(Optional.of(userMocked));
         when(userRepository.save(any())).thenReturn(userMocked);
 
@@ -215,8 +214,10 @@ public class UserServiceTest {
         // Given
         UserDTO userDTO = MockUtils.mockUserDTO();
         Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+        User userMocked = mockUser(1L, USER_NAME_BOB, USER_EMAIL_DIEGO, profileMocked);
 
         // When
+        when(userRepository.findById(any())).thenReturn(Optional.of(userMocked));
         when(profileService.getById(any())).thenThrow(new ProfileNotFoundException(1));
 
         // Then
@@ -229,9 +230,10 @@ public class UserServiceTest {
         // Given
         UserDTO userDTO = MockUtils.mockUserDTO();
         Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
-        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+        User userMocked = mockUser(1L, USER_NAME_BOB, USER_EMAIL_DIEGO, profileMocked);
 
         // When
+        when(userRepository.findById(any())).thenReturn(Optional.of(userMocked));
         when(profileService.getById(any())).thenReturn(profileMocked);
         when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.of(userMocked));
 
@@ -245,11 +247,11 @@ public class UserServiceTest {
         // Given
         UserDTO userDTO = MockUtils.mockUserDTO();
         Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
-        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_BOB, profileMocked);
 
         // When
+        when(userRepository.findById(any())).thenReturn(Optional.of(userMocked));
         when(profileService.getById(any())).thenReturn(profileMocked);
-        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.empty());
         when(userRepository.getByEmail(userDTO.getEmail())).thenReturn(Optional.of(userMocked));
 
         // Then
@@ -264,13 +266,20 @@ public class UserServiceTest {
         Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
 
         // When
-        when(profileService.getById(any())).thenReturn(profileMocked);
-        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.empty());
-        when(userRepository.getByEmail(userDTO.getEmail())).thenReturn(Optional.empty());
         when(userRepository.findById(any())).thenReturn(Optional.empty());
 
         // Then
         UserDTO result = userService.update(1L, userDTO);
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void deleteTest() {
+
+        // When
+        doThrow(new UserNotFoundException(1)).when(userRepository).deleteById(any());
+
+        // Then
+        userService.delete(1L);
     }
 
 }

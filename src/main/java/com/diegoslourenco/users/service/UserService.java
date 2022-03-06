@@ -64,13 +64,8 @@ public class UserService {
 
         Profile profile = profileService.getById(dto.getProfileId());
 
-        if (!this.checkUniqueName(dto)) {
-            throw new NameNotUniqueException();
-        }
-
-        if (!this.checkUniqueEmail(dto)) {
-            throw new EmailNotUniqueException();
-        }
+        this.checkUniqueName(dto);
+        this.checkUniqueEmail(dto);
 
         User user = userBuilder.build(dto, profile);
 
@@ -81,17 +76,17 @@ public class UserService {
 
     public UserDTO update(Long id, UserDTO dto) {
 
+        User userSaved = this.getById(id);
         Profile profile = profileService.getById(dto.getProfileId());
 
-        if (!this.checkUniqueName(dto)) {
-            throw new NameNotUniqueException();
+        if (!userSaved.getName().equals(dto.getName())) {
+            this.checkUniqueName(dto);
         }
 
-        if (!this.checkUniqueEmail(dto)) {
-            throw new EmailNotUniqueException();
+        if (!userSaved.getEmail().equals(dto.getEmail())) {
+            this.checkUniqueEmail(dto);
         }
 
-        User userSaved = this.getById(id);
         userSaved.setProfile(profile);
         userSaved.setName(dto.getName());
         userSaved.setEmail(dto.getEmail());
@@ -101,26 +96,26 @@ public class UserService {
         return userDTOBuilder.build(userUpdated);
     }
 
-    private boolean checkUniqueName(UserDTO dto) {
+    public void delete(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    private void checkUniqueName(UserDTO dto) {
 
         Optional<User> optionalUser = userRepository.getByName(dto.getName());
 
         if (optionalUser.isPresent()) {
-            return false;
+            throw new NameNotUniqueException();
         }
-
-        return true;
     }
 
-    private boolean checkUniqueEmail(UserDTO dto) {
+    private void checkUniqueEmail(UserDTO dto) {
 
         Optional<User> optionalUser = userRepository.getByEmail(dto.getEmail());
 
         if (optionalUser.isPresent()) {
-            return false;
+            throw new EmailNotUniqueException();
         }
-
-        return true;
     }
 
 }

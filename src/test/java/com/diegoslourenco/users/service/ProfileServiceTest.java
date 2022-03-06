@@ -166,10 +166,11 @@ public class ProfileServiceTest {
 
         // Given
         ProfileDTO profileDTO = MockUtils.mockProfileDTO();
-        Profile profile = MockUtils.mockProfile(1L, MockUtils.PROFILE_NAME_ADMIN);
+        Profile profileMocked = MockUtils.mockProfile(1L, MockUtils.PROFILE_NAME_BASIC_USER);
 
         // When
-        when(profileRepository.getByName(profileDTO.getName())).thenReturn(Optional.of(profile));
+        when(profileRepository.findById(1L)).thenReturn(Optional.of(profileMocked));
+        when(profileRepository.getByName(profileDTO.getName())).thenReturn(Optional.of(profileMocked));
 
         // Then
         ProfileDTO result = profileService.update(1L, profileDTO);
