@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class Profile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

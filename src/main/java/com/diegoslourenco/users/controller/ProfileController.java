@@ -43,7 +43,7 @@ public class ProfileController {
             @ApiResponse(responseCode = "200", description = "Profile found",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ProfileDTO.class)) }),
-            @ApiResponse(responseCode = "404", description = "Resource not found",
+            @ApiResponse(responseCode = "404", description = "Profile not found",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorDTO.class) )})})
     @GetMapping("/{id}")
@@ -53,7 +53,7 @@ public class ProfileController {
 
     @Operation(summary = "Create a profile")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Profile created",
+            @ApiResponse(responseCode = "201", description = "Profile created",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ProfileDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Bad request",
@@ -72,14 +72,12 @@ public class ProfileController {
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorDTO.class) )}),
-            @ApiResponse(responseCode = "404", description = "Resource not found",
+            @ApiResponse(responseCode = "404", description = "Profile not found",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorDTO.class) )})})
     @PutMapping("/{id}")
     public ResponseEntity<ProfileDTO> update(@PathVariable Long id, @Valid @RequestBody ProfileDTO dto) {
         return new ResponseEntity<>(profileService.update(id, dto), HttpStatus.OK);
     }
-
-
 
 }

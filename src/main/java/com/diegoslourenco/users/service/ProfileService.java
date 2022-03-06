@@ -47,9 +47,7 @@ public class ProfileService {
 
     public Long save(ProfileDTO dto) {
 
-        if (!this.checkUniqueName(dto)) {
-            throw new NameNotUniqueException();
-        }
+        this.checkUniqueName(dto);
 
         Profile profile = profileBuilder.build(dto);
 
@@ -60,11 +58,11 @@ public class ProfileService {
 
     public ProfileDTO update(Long id, ProfileDTO dto) {
 
-        if (!this.checkUniqueName(dto)) {
-            throw new NameNotUniqueException();
-        }
-
         Profile profileSaved = this.getById(id);
+
+        if (!profileSaved.getName().equals(dto.getName())) {
+            this.checkUniqueName(dto);
+        }
 
         BeanUtils.copyProperties(dto, profileSaved, "id");
 
@@ -85,15 +83,14 @@ public class ProfileService {
     }
 
 
-    private boolean checkUniqueName(ProfileDTO dto) {
+    private void checkUniqueName(ProfileDTO dto) {
 
         Optional<Profile> optionalProfile = profileRepository.getByName(dto.getName());
 
         if (optionalProfile.isPresent()) {
-            return false;
+            throw new NameNotUniqueException();
         }
 
-        return true;
     }
 }
 
