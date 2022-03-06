@@ -16,10 +16,17 @@ import java.util.List;
 
 public class MockUtils {
 
+
     private static ObjectMapper mapper = new ObjectMapper();
 
     public static String PROFILE_NAME_ADMIN = "admin";
     public static String PROFILE_NAME_BASIC_USER = "basic_user";
+
+    private static final String USER_NAME_DIEGO = "Diego Lourenco";
+    private static final String USER_EMAIL_DIEGO = "diego.lourenco15@gmail.com";
+
+    private static final String USER_NAME_BOB = "Bob Dylan";
+    private static final String USER_EMAIL_BOB = "bob@email.com";
 
     public static List<ProfileDTO> mockProfileDTOList(String filePath) throws IOException {
         return mapper.readValue(new File(filePath), new TypeReference<List<ProfileDTO>>(){});
@@ -60,7 +67,7 @@ public class MockUtils {
     public static List<User> mockUserListWithOneObject() {
 
         List<User> users = new ArrayList<>();
-        users.add(mockUser(1L, "Diego Lourenço", "diego.lourenco15@gmail.com"));
+        users.add(mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO));
 
         return users;
     }
@@ -68,8 +75,8 @@ public class MockUtils {
     public static List<User> mockUserListWithTwoObjects() {
 
         List<User> users = new ArrayList<>();
-        users.add(mockUser(1L, "Diego Lourenço", "diego.lourenco15@gmail.com"));
-        users.add(mockUser(2L, "Bob Dylan", "bob@email.com"));
+        users.add(mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO));
+        users.add(mockUser(2L, USER_NAME_BOB, USER_EMAIL_BOB));
 
         return users;
     }
@@ -87,5 +94,8 @@ public class MockUtils {
     }
 
 
+    public static UserDTO mockUserDTO() {
+        return new UserDTO(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO);
+    }
 }
 
