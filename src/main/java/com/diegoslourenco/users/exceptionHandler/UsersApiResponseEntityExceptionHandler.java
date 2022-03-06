@@ -37,10 +37,18 @@ public class UsersApiResponseEntityExceptionHandler extends ResponseEntityExcept
 
     }
 
-    @ExceptionHandler({ EmptyResultDataAccessException.class })
-    public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
+    @ExceptionHandler({ ProfileNotFoundException.class })
+    public ResponseEntity<Object> handleEmptyProfiletDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
 
-        List<ErrorDTO> errors = Collections.singletonList(new ErrorDTO("Resource not found", ex.toString()));
+        List<ErrorDTO> errors = Collections.singletonList(new ErrorDTO("Profile not found", ex.toString()));
+
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+
+    @ExceptionHandler({ UserNotFoundException.class })
+    public ResponseEntity<Object> handleEmptyUserResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
+
+        List<ErrorDTO> errors = Collections.singletonList(new ErrorDTO("User not found", ex.toString()));
 
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
