@@ -1,6 +1,5 @@
 package com.diegoslourenco.users.service;
 
-
 import com.diegoslourenco.users.builder.ProfileBuilder;
 import com.diegoslourenco.users.builder.ProfileDTOBuilder;
 import com.diegoslourenco.users.dto.ProfileDTO;
@@ -61,7 +60,7 @@ public class ProfileServiceTest {
 
         // Given
         List<Profile> profilesMock = MockUtils.mockProfileListWithOneObject();
-        List<ProfileDTO> expected = MockUtils.mockProfileDTOList("src/test/resources/json/response/profileDTOListWithOneObject.json");
+        List<ProfileDTO> expected = MockUtils.mockProfileDTOList("src/test/resources/json/profile/response/profileDTOListWithOneObject.json");
 
         // When
         when(profileRepository.findAll()).thenReturn(profilesMock);
@@ -77,7 +76,7 @@ public class ProfileServiceTest {
 
         // Given
         List<Profile> profilesMock = MockUtils.mockProfileListWithTwoObjects();
-        List<ProfileDTO> expected = MockUtils.mockProfileDTOList("src/test/resources/json/response/profileDTOListWithTwoObjects.json");
+        List<ProfileDTO> expected = MockUtils.mockProfileDTOList("src/test/resources/json/profile/response/profileDTOListWithTwoObjects.json");
 
         // When
         when(profileRepository.findAll()).thenReturn(profilesMock);

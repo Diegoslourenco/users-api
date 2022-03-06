@@ -72,7 +72,7 @@ public class ProfileControllerTest {
 
         ProfileDTO profileMocked = MockUtils.mockProfileDTO();
 
-        String expected = MockUtils.mockString("src/test/resources/json/response/profileDTO.json");
+        String expected = MockUtils.mockString("src/test/resources/json/profile/response/profileDTO.json");
 
         // When
         when(profileService.getOne(1L)).thenReturn(profileMocked);
@@ -97,7 +97,7 @@ public class ProfileControllerTest {
 
         ProfileDTO profileMocked = MockUtils.mockProfileDTO();
 
-        String expected = MockUtils.mockString("src/test/resources/json/error/profileNotFound.json");
+        String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNotFound.json");
 
         // When
         when(profileService.getOne(1L)).thenThrow(new EmptyResultDataAccessException(1));
@@ -120,7 +120,7 @@ public class ProfileControllerTest {
         // Given
         String uri = "/profiles";
 
-        String profileMocked = MockUtils.mockString("src/test/resources/json/request/profileDTORequest.json");
+        String profileMocked = MockUtils.mockString("src/test/resources/json/profile/request/profileDTORequest.json");
 
         String expected = "1";
 
@@ -145,9 +145,9 @@ public class ProfileControllerTest {
         // Given
         String uri = "/profiles";
 
-        String profileMocked = MockUtils.mockString("src/test/resources/json/request/profileDTORequest.json");
+        String profileMocked = MockUtils.mockString("src/test/resources/json/profile/request/profileDTORequest.json");
 
-        String expected = MockUtils.mockString("src/test/resources/json/error/profileNameNotUnique.json");
+        String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNameNotUnique.json");
 
         // When
         when(profileService.save(any())).thenThrow(ProfileNameNotUniqueException.class);
@@ -170,11 +170,11 @@ public class ProfileControllerTest {
         // Given
         String uri = "/profiles/1";
 
-        String profileMocked = MockUtils.mockString("src/test/resources/json/request/profileDTORequest.json");
+        String profileMocked = MockUtils.mockString("src/test/resources/json/profile/request/profileDTORequest.json");
 
         ProfileDTO profileDTOMocked = MockUtils.mockProfileDTO();
 
-        String expected = MockUtils.mockString("src/test/resources/json/response/profileDTO.json");
+        String expected = MockUtils.mockString("src/test/resources/json/profile/response/profileDTO.json");
 
         // When
         when(profileService.update(any(), any())).thenReturn(profileDTOMocked);
@@ -196,8 +196,8 @@ public class ProfileControllerTest {
 
         // Given
         String uri = "/profiles/1";
-        String profileMocked = MockUtils.mockString("src/test/resources/json/request/profileDTORequest.json");
-        String expected = MockUtils.mockString("src/test/resources/json/error/profileNameNotUnique.json");
+        String profileMocked = MockUtils.mockString("src/test/resources/json/profile/request/profileDTORequest.json");
+        String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNameNotUnique.json");
 
         // When
         when(profileService.update(any(), any())).thenThrow(ProfileNameNotUniqueException.class);
@@ -219,8 +219,8 @@ public class ProfileControllerTest {
 
         // Given
         String uri = "/profiles/1";
-        String profileMocked = MockUtils.mockString("src/test/resources/json/request/profileDTORequest.json");
-        String expected = MockUtils.mockString("src/test/resources/json/error/profileNotFound.json");
+        String profileMocked = MockUtils.mockString("src/test/resources/json/profile/request/profileDTORequest.json");
+        String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNotFound.json");
 
         // When
         when(profileService.update(any(), any())).thenThrow(new EmptyResultDataAccessException(1));
