@@ -8,15 +8,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,10 +45,18 @@ public class UsersApiResponseEntityExceptionHandler extends ResponseEntityExcept
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler({ ProfileNameNotUniqueException.class })
-    public ResponseEntity<Object> handleStarterUsernameNotUniqueException(ProfileNameNotUniqueException ex, WebRequest request) {
+    @ExceptionHandler({ NameNotUniqueException.class })
+    public ResponseEntity<Object> handleUserNotUniqueException(NameNotUniqueException ex, WebRequest request) {
 
-        List<ErrorDTO> errors = Collections.singletonList(new ErrorDTO("Name already in use for another profile", ex.toString()));
+        List<ErrorDTO> errors = Collections.singletonList(new ErrorDTO("Name already in use for another resource", ex.toString()));
+
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler({ EmailNotUniqueException.class })
+    public ResponseEntity<Object> handleEmailNotUniqueException(EmailNotUniqueException ex, WebRequest request) {
+
+        List<ErrorDTO> errors = Collections.singletonList(new ErrorDTO("Email already in use for another user", ex.toString()));
 
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }

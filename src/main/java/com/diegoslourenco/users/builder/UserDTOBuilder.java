@@ -1,8 +1,6 @@
 package com.diegoslourenco.users.builder;
 
-import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.dto.UserDTO;
-import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.model.User;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +20,7 @@ public class UserDTOBuilder {
     }
 
     public UserDTO build(User user) {
-        return new UserDTO(user.getId(), user.getName(), user.getEmail());
+        return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getProfile().getId());
     }
 
 }

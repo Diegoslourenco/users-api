@@ -3,7 +3,7 @@ package com.diegoslourenco.users.service;
 import com.diegoslourenco.users.builder.ProfileBuilder;
 import com.diegoslourenco.users.builder.ProfileDTOBuilder;
 import com.diegoslourenco.users.dto.ProfileDTO;
-import com.diegoslourenco.users.exceptionHandler.ProfileNameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
 import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.repository.ProfileRepository;
 import com.diegoslourenco.users.utils.MockUtils;
@@ -129,7 +129,7 @@ public class ProfileServiceTest {
         assertThat(result).isEqualTo(1L);
     }
 
-    @Test(expected = ProfileNameNotUniqueException.class)
+    @Test(expected = NameNotUniqueException.class)
     public void createProfileNotUniqueTest() {
 
         // Given
@@ -160,7 +160,7 @@ public class ProfileServiceTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(profileDTO);
     }
 
-    @Test(expected = ProfileNameNotUniqueException.class)
+    @Test(expected = NameNotUniqueException.class)
     public void updateProfileNotUniqueTest() {
 
         // Given

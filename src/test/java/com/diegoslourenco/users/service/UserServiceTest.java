@@ -1,8 +1,14 @@
 package com.diegoslourenco.users.service;
 
+import com.diegoslourenco.users.builder.UserBuilder;
 import com.diegoslourenco.users.builder.UserDTOBuilder;
+import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.dto.UserDTO;
+import com.diegoslourenco.users.exceptionHandler.EmailNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
+import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.model.User;
+import com.diegoslourenco.users.repository.ProfileRepository;
 import com.diegoslourenco.users.repository.UserRepository;
 import com.diegoslourenco.users.utils.MockUtils;
 import org.junit.Test;
@@ -11,12 +17,16 @@ import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import static com.diegoslourenco.users.utils.MockUtils.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -30,6 +40,12 @@ public class UserServiceTest {
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private UserDTOBuilder userDTOBuilder;
+
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
+    private UserBuilder userBuilder;
+
+    @Mock
+    private ProfileService profileService;
 
     @Test
     public void getAllForEmptyListTest() {
@@ -48,7 +64,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getAllForListWithOneProfileDTOTest() throws IOException {
+    public void getAllForListWithOneUserDTOTest() throws IOException {
 
         // Given
         List<User> userMock = MockUtils.mockUserListWithOneObject();
@@ -64,7 +80,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getAllForListWithTwoProfileDTOTest() throws IOException {
+    public void getAllForListWithTwoUserDTOTest() throws IOException {
 
         // Given
         List<User> userMock = MockUtils.mockUserListWithTwoObjects();
@@ -78,5 +94,85 @@ public class UserServiceTest {
 
         assertThat(result).usingRecursiveComparison().isEqualTo(expected);
     }
+
+    @Test
+    public void getByIdTest() {
+
+        // Given
+        Profile profileMocked = MockUtils.mockProfile(PROFILE_ID_1, PROFILE_NAME_ADMIN);
+        User userMocked = MockUtils.mockUser(PROFILE_ID_1, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+        UserDTO expected = MockUtils.mockUserDTO();
+
+        // When
+        when(userRepository.findById(1L)).thenReturn(Optional.of(userMocked));
+
+        // Then
+        UserDTO result = userService.getOne(1L);
+
+        assertThat(result).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void getByIdNotFoundTest() {
+
+        // When
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Then
+        UserDTO result = userService.getOne(1L);
+    }
+
+    @Test
+    public void createTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+
+        // When
+        when(profileService.getById(any())).thenReturn(profileMocked);
+        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.empty());
+        when(userRepository.getByEmail(userDTO.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.save(any())).thenReturn(userMocked);
+
+        // Then
+        Long result = userService.save(userDTO);
+        assertThat(result).isEqualTo(1L);
+    }
+
+    @Test(expected = NameNotUniqueException.class)
+    public void createForNotUniqueNameTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+
+        // When
+        when(profileService.getById(any())).thenReturn(profileMocked);
+        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.of(userMocked));
+
+        // Then
+        Long result = userService.save(userDTO);
+    }
+
+    @Test(expected = EmailNotUniqueException.class)
+    public void createForNotUniqueEmailTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+
+        // When
+        when(profileService.getById(any())).thenReturn(profileMocked);
+        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.empty());
+        when(userRepository.getByEmail(userDTO.getEmail())).thenReturn(Optional.of(userMocked));
+
+        // Then
+        Long result = userService.save(userDTO);
+    }
+
 
 }

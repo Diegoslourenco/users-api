@@ -2,11 +2,13 @@
   {
     "id" : 1,
     "name" : "Diego Lourenco",
-    "email" : "diego.lourenco15@gmail.com"
+    "email" : "diego.lourenco15@gmail.com",
+    "profileId" : 1
   },
   {
     "id" : 2,
     "name" : "Bob Dylan",
-    "email" : "bob@email.com"
+    "email" : "bob@email.com",
+    "profileId" : 1
   }
 ]

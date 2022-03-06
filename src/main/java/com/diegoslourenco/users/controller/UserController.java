@@ -1,6 +1,7 @@
 package com.diegoslourenco.users.controller;
 
 import com.diegoslourenco.users.dto.ErrorDTO;
+import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.dto.UserDTO;
 import com.diegoslourenco.users.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,11 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -51,5 +50,18 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getById(@PathVariable Long id) {
         return new ResponseEntity<>(userService.getOne(id), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Create a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User created",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProfileDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class) )})})
+    @PostMapping
+    public ResponseEntity<Long> create(@Valid @RequestBody UserDTO dto) {
+        return new ResponseEntity<>(userService.save(dto), HttpStatus.CREATED);
     }
 }

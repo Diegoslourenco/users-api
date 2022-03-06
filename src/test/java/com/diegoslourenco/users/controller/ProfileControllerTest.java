@@ -1,7 +1,7 @@
 package com.diegoslourenco.users.controller;
 
 import com.diegoslourenco.users.dto.ProfileDTO;
-import com.diegoslourenco.users.exceptionHandler.ProfileNameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
 import com.diegoslourenco.users.service.ProfileService;
 import com.diegoslourenco.users.utils.MockUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,8 +95,6 @@ public class ProfileControllerTest {
         // Given
         String uri = "/profiles/1";
 
-        ProfileDTO profileMocked = MockUtils.mockProfileDTO();
-
         String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNotFound.json");
 
         // When
@@ -150,7 +148,7 @@ public class ProfileControllerTest {
         String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNameNotUnique.json");
 
         // When
-        when(profileService.save(any())).thenThrow(ProfileNameNotUniqueException.class);
+        when(profileService.save(any())).thenThrow(NameNotUniqueException.class);
 
         // Then
         MvcResult mvcResult = mockMvc
@@ -200,7 +198,7 @@ public class ProfileControllerTest {
         String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNameNotUnique.json");
 
         // When
-        when(profileService.update(any(), any())).thenThrow(ProfileNameNotUniqueException.class);
+        when(profileService.update(any(), any())).thenThrow(NameNotUniqueException.class);
 
         // Then
         MvcResult mvcResult = mockMvc

@@ -26,4 +26,8 @@ public class User {
 
     @Column(name = "EMAIL")
     private String email;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_PROFILE")
+    private Profile profile;
 }

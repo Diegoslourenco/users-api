@@ -16,17 +16,19 @@ import java.util.List;
 
 public class MockUtils {
 
-
     private static ObjectMapper mapper = new ObjectMapper();
 
     public static String PROFILE_NAME_ADMIN = "admin";
     public static String PROFILE_NAME_BASIC_USER = "basic_user";
 
-    private static final String USER_NAME_DIEGO = "Diego Lourenco";
-    private static final String USER_EMAIL_DIEGO = "diego.lourenco15@gmail.com";
+    public static final String USER_NAME_DIEGO = "Diego Lourenco";
+    public static final String USER_EMAIL_DIEGO = "diego.lourenco15@gmail.com";
 
-    private static final String USER_NAME_BOB = "Bob Dylan";
-    private static final String USER_EMAIL_BOB = "bob@email.com";
+    public static final String USER_NAME_BOB = "Bob Dylan";
+    public static final String USER_EMAIL_BOB = "bob@email.com";
+
+    public static final long PROFILE_ID_1 = 1L;
+    public static final long PROFILE_ID_2 = 2L;
 
     public static List<ProfileDTO> mockProfileDTOList(String filePath) throws IOException {
         return mapper.readValue(new File(filePath), new TypeReference<List<ProfileDTO>>(){});
@@ -35,7 +37,7 @@ public class MockUtils {
     public static List<Profile> mockProfileListWithOneObject() {
 
         List<Profile> profiles = new ArrayList<>();
-        profiles.add(mockProfile(1L, "admin"));
+        profiles.add(mockProfile(PROFILE_ID_1, "admin"));
 
         return profiles;
     }
@@ -43,7 +45,7 @@ public class MockUtils {
     public static List<Profile> mockProfileListWithTwoObjects() {
 
         List<Profile> profiles = new ArrayList<>();
-        profiles.add(mockProfile(1L, PROFILE_NAME_ADMIN));
+        profiles.add(mockProfile(PROFILE_ID_1, PROFILE_NAME_ADMIN));
         profiles.add(mockProfile(2L, PROFILE_NAME_BASIC_USER));
 
         return profiles;
@@ -57,7 +59,7 @@ public class MockUtils {
     }
 
     public static ProfileDTO mockProfileDTO() {
-        return new ProfileDTO(1L, PROFILE_NAME_ADMIN);
+        return new ProfileDTO(PROFILE_ID_1, PROFILE_NAME_ADMIN);
     }
 
     public static String mockString(String filePath) throws IOException {
@@ -67,7 +69,8 @@ public class MockUtils {
     public static List<User> mockUserListWithOneObject() {
 
         List<User> users = new ArrayList<>();
-        users.add(mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO));
+        Profile profile = mockProfile(PROFILE_ID_1, PROFILE_NAME_ADMIN);
+        users.add(mockUser(PROFILE_ID_1, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profile));
 
         return users;
     }
@@ -75,17 +78,19 @@ public class MockUtils {
     public static List<User> mockUserListWithTwoObjects() {
 
         List<User> users = new ArrayList<>();
-        users.add(mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO));
-        users.add(mockUser(2L, USER_NAME_BOB, USER_EMAIL_BOB));
+        Profile profile = mockProfile(PROFILE_ID_1, PROFILE_NAME_ADMIN);
+        users.add(mockUser(PROFILE_ID_1, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profile));
+        users.add(mockUser(PROFILE_ID_2, USER_NAME_BOB, USER_EMAIL_BOB, profile));
 
         return users;
     }
 
-    private static User mockUser(long id, String name, String email) {
+    public static User mockUser(long id, String name, String email, Profile profile) {
         User user = new User();
         user.setId(id);
         user.setName(name);
         user.setEmail(email);
+        user.setProfile(profile);
         return user;
     }
 
@@ -95,7 +100,7 @@ public class MockUtils {
 
 
     public static UserDTO mockUserDTO() {
-        return new UserDTO(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO);
+        return new UserDTO(PROFILE_ID_1, USER_NAME_DIEGO, USER_EMAIL_DIEGO, PROFILE_ID_1);
     }
 }
 

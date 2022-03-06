@@ -3,7 +3,7 @@ package com.diegoslourenco.users.service;
 import com.diegoslourenco.users.builder.ProfileBuilder;
 import com.diegoslourenco.users.builder.ProfileDTOBuilder;
 import com.diegoslourenco.users.dto.ProfileDTO;
-import com.diegoslourenco.users.exceptionHandler.ProfileNameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
 import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.repository.ProfileRepository;
 import org.springframework.beans.BeanUtils;
@@ -40,15 +40,15 @@ public class ProfileService {
 
     public ProfileDTO getOne(Long id) {
 
-        Profile profileSaved = getById(id);
+        Profile profileSaved = this.getById(id);
 
         return profileDTOBuilder.build(profileSaved);
     }
 
     public Long save(ProfileDTO dto) {
 
-        if (!checkUniqueName(dto)) {
-            throw new ProfileNameNotUniqueException();
+        if (!this.checkUniqueName(dto)) {
+            throw new NameNotUniqueException();
         }
 
         Profile profile = profileBuilder.build(dto);
@@ -60,8 +60,8 @@ public class ProfileService {
 
     public ProfileDTO update(Long id, ProfileDTO dto) {
 
-        if (!checkUniqueName(dto)) {
-            throw new ProfileNameNotUniqueException();
+        if (!this.checkUniqueName(dto)) {
+            throw new NameNotUniqueException();
         }
 
         Profile profileSaved = this.getById(id);
@@ -73,7 +73,7 @@ public class ProfileService {
         return profileDTOBuilder.build(profileUpdated);
     }
 
-    private Profile getById(Long id) {
+    public Profile getById(Long id) {
 
         Optional<Profile> profileSaved = profileRepository.findById(id);
 
