@@ -4,9 +4,12 @@ import com.diegoslourenco.users.builder.ProfileBuilder;
 import com.diegoslourenco.users.builder.ProfileDTOBuilder;
 import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.ProfileHasUsersException;
 import com.diegoslourenco.users.exceptionHandler.ProfileNotFoundException;
 import com.diegoslourenco.users.model.Profile;
+import com.diegoslourenco.users.model.User;
 import com.diegoslourenco.users.repository.ProfileRepository;
+import com.diegoslourenco.users.repository.UserRepository;
 import com.diegoslourenco.users.utils.MockUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +26,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -33,6 +37,9 @@ public class ProfileServiceTest {
 
     @Mock
     private ProfileRepository profileRepository;
+
+    @Mock
+    private UserRepository userRepository;
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private ProfileDTOBuilder profileDTOBuilder;
@@ -187,6 +194,29 @@ public class ProfileServiceTest {
 
         // Then
         ProfileDTO result = profileService.update(1L, profileDTO);
+    }
+
+    @Test(expected = ProfileNotFoundException.class)
+    public void deleteForProfileNotFoundTest() {
+
+        // Then
+        profileService.delete(1L);
+    }
+
+    @Test(expected = ProfileHasUsersException.class)
+    public void deleteForProfileHasUsersTest() {
+
+        // Given
+        List<User> users = new ArrayList<>();
+        Profile profileMocked = MockUtils.mockProfile(1L, MockUtils.PROFILE_NAME_ADMIN);
+        users.add(MockUtils.mockUser(1L, MockUtils.USER_NAME_DIEGO, MockUtils.USER_EMAIL_DIEGO, profileMocked));
+
+        // When
+        when(profileRepository.findById(any())).thenReturn(Optional.of(profileMocked));
+        when(userRepository.getByProfile(any())).thenReturn(users);
+
+        // Then
+        profileService.delete(1L);
     }
 
 }

@@ -4,9 +4,12 @@ import com.diegoslourenco.users.builder.ProfileBuilder;
 import com.diegoslourenco.users.builder.ProfileDTOBuilder;
 import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.ProfileHasUsersException;
 import com.diegoslourenco.users.exceptionHandler.ProfileNotFoundException;
 import com.diegoslourenco.users.model.Profile;
+import com.diegoslourenco.users.model.User;
 import com.diegoslourenco.users.repository.ProfileRepository;
+import com.diegoslourenco.users.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +23,14 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final ProfileDTOBuilder profileDTOBuilder;
     private final ProfileBuilder profileBuilder;
+    private final UserRepository userRepository;
 
-    public ProfileService(ProfileRepository profileRepository, ProfileDTOBuilder profileDTOBuilder, ProfileBuilder profileBuilder) {
+
+    public ProfileService(ProfileRepository profileRepository, ProfileDTOBuilder profileDTOBuilder, ProfileBuilder profileBuilder, UserRepository userRepository) {
         this.profileRepository = profileRepository;
         this.profileDTOBuilder = profileDTOBuilder;
         this.profileBuilder = profileBuilder;
+        this.userRepository = userRepository;
     }
 
     public List<ProfileDTO> getAll() {
@@ -91,6 +97,19 @@ public class ProfileService {
             throw new NameNotUniqueException();
         }
 
+    }
+
+    public void delete(Long id) {
+
+        Profile profileSaved = this.getById(id);
+
+        List<User> users = userRepository.getByProfile(profileSaved.getId());
+
+        if (!users.isEmpty()) {
+            throw new ProfileHasUsersException();
+        }
+
+        profileRepository.deleteById(id);
     }
 }
 

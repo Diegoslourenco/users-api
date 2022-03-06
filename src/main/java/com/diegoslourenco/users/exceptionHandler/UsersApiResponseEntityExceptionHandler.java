@@ -69,6 +69,14 @@ public class UsersApiResponseEntityExceptionHandler extends ResponseEntityExcept
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    @ExceptionHandler({ ProfileHasUsersException.class })
+    public ResponseEntity<Object> handleProfileHasUsersException(ProfileHasUsersException ex, WebRequest request) {
+
+        List<ErrorDTO> errors = Collections.singletonList(new ErrorDTO("Profile still has users", ex.toString()));
+
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
     private List<ErrorDTO> createErrorsList(BindingResult bindingResult) {
 
         return bindingResult.getFieldErrors().stream()

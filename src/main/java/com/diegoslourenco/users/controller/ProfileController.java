@@ -80,4 +80,19 @@ public class ProfileController {
         return new ResponseEntity<>(profileService.update(id, dto), HttpStatus.OK);
     }
 
+
+    @Operation(summary = "Delete a profile")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Profile deleted",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProfileDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Profile not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class) )})})
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        profileService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

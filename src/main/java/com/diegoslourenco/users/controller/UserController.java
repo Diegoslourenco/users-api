@@ -88,6 +88,9 @@ public class UserController {
             @ApiResponse(responseCode = "204", description = "User deleted",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = UserDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Profile has users",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class) )}),
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorDTO.class) )})})

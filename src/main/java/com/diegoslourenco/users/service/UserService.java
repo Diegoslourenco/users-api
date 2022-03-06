@@ -9,7 +9,6 @@ import com.diegoslourenco.users.exceptionHandler.UserNotFoundException;
 import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.model.User;
 import com.diegoslourenco.users.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

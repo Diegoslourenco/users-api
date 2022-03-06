@@ -2,7 +2,9 @@ package com.diegoslourenco.users.controller;
 
 import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.ProfileHasUsersException;
 import com.diegoslourenco.users.exceptionHandler.ProfileNotFoundException;
+import com.diegoslourenco.users.exceptionHandler.UserNotFoundException;
 import com.diegoslourenco.users.service.ProfileService;
 import com.diegoslourenco.users.utils.MockUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -232,6 +235,66 @@ public class ProfileControllerTest {
         String result = mvcResult.getResponse().getContentAsString();
 
         assertThat(status).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(result).usingDefaultComparator().isEqualTo(expected);
+    }
+
+    @Test
+    public void deleteTest() throws Exception {
+
+        // Given
+        String uri = "/profiles/1";
+
+        // Then
+        MvcResult mvcResult = mockMvc
+                .perform(delete(uri).contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+
+        assertThat(status).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    public void deleteForNotFoundTest() throws Exception {
+
+        // Given
+        String uri = "/profiles/1";
+        String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNotFound.json");
+
+        // When
+        doThrow(new ProfileNotFoundException(1)).when(profileService).delete(any());
+
+        // Then
+        MvcResult mvcResult = mockMvc
+                .perform(delete(uri).contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        String result = mvcResult.getResponse().getContentAsString();
+
+        assertThat(status).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(result).usingDefaultComparator().isEqualTo(expected);
+    }
+
+    @Test
+    public void deleteForProfileHasUsersTest() throws Exception {
+
+        // Given
+        String uri = "/profiles/1";
+        String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileHasUsers.json");
+
+        // When
+        doThrow(new ProfileHasUsersException()).when(profileService).delete(any());
+
+        // Then
+        MvcResult mvcResult = mockMvc
+                .perform(delete(uri).contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andReturn();
+
+        int status = mvcResult.getResponse().getStatus();
+        String result = mvcResult.getResponse().getContentAsString();
+
+        assertThat(status).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(result).usingDefaultComparator().isEqualTo(expected);
     }
 
