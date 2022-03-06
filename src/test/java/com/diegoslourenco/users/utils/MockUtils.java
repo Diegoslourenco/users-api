@@ -4,8 +4,6 @@ import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.model.Profile;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.json.JSONObject;
-import org.json.JSONString;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +11,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 public class MockUtils {
 
