@@ -1,7 +1,9 @@
 package com.diegoslourenco.users.utils;
 
 import com.diegoslourenco.users.dto.ProfileDTO;
+import com.diegoslourenco.users.dto.UserDTO;
 import com.diegoslourenco.users.model.Profile;
+import com.diegoslourenco.users.model.User;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -54,6 +56,36 @@ public class MockUtils {
     public static String mockString(String filePath) throws IOException {
         return new String(Files.readAllBytes(Paths.get(filePath)));
     }
+
+    public static List<User> mockUserListWithOneObject() {
+
+        List<User> users = new ArrayList<>();
+        users.add(mockUser(1L, "Diego Lourenço", "diego.lourenco15@gmail.com"));
+
+        return users;
+    }
+
+    public static List<User> mockUserListWithTwoObjects() {
+
+        List<User> users = new ArrayList<>();
+        users.add(mockUser(1L, "Diego Lourenço", "diego.lourenco15@gmail.com"));
+        users.add(mockUser(2L, "Bob Dylan", "bob@email.com"));
+
+        return users;
+    }
+
+    private static User mockUser(long id, String name, String email) {
+        User user = new User();
+        user.setId(id);
+        user.setName(name);
+        user.setEmail(email);
+        return user;
+    }
+
+    public static List<UserDTO> mockUserDTOList(String filePath) throws IOException {
+        return mapper.readValue(new File(filePath), new TypeReference<List<UserDTO>>(){});
+    }
+
 
 }
 
