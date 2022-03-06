@@ -8,7 +8,6 @@ import com.diegoslourenco.users.exceptionHandler.ProfileNameNotUniqueException;
 import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.repository.ProfileRepository;
 import com.diegoslourenco.users.utils.MockUtils;
-import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -100,7 +99,7 @@ public class ProfileServiceTest {
         when(profileRepository.findById(1L)).thenReturn(Optional.of(profile));
 
         // Then
-        ProfileDTO result = profileService.getById(1L);
+        ProfileDTO result = profileService.getOne(1L);
 
         assertThat(result).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -112,7 +111,7 @@ public class ProfileServiceTest {
         when(profileRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Then
-        ProfileDTO result = profileService.getById(1L);
+        ProfileDTO result = profileService.getOne(1L);
     }
 
     @Test
@@ -143,6 +142,50 @@ public class ProfileServiceTest {
 
         // Then
         Long result = profileService.save(profileDTO);
+    }
+
+    @Test
+    public void updateTest() {
+
+        // Given
+        ProfileDTO profileDTO = MockUtils.mockProfileDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, MockUtils.PROFILE_NAME_BASIC_USER);
+
+        // When
+        when(profileRepository.getByName(profileDTO.getName())).thenReturn(Optional.empty());
+        when(profileRepository.findById(any())).thenReturn(Optional.of(profileMocked));
+        when(profileRepository.save(any())).thenReturn(profileMocked);
+
+        // Then
+        ProfileDTO result = profileService.update(1L, profileDTO);
+        assertThat(result).usingRecursiveComparison().isEqualTo(profileDTO);
+    }
+
+    @Test(expected = ProfileNameNotUniqueException.class)
+    public void updateProfileNotUniqueTest() {
+
+        // Given
+        ProfileDTO profileDTO = MockUtils.mockProfileDTO();
+        Profile profile = MockUtils.mockProfile(1L, MockUtils.PROFILE_NAME_ADMIN);
+
+        // When
+        when(profileRepository.getByName(profileDTO.getName())).thenReturn(Optional.of(profile));
+
+        // Then
+        ProfileDTO result = profileService.update(1L, profileDTO);
+    }
+
+    @Test(expected = EmptyResultDataAccessException.class)
+    public void updateNotFoundTest() {
+
+        // Given
+        ProfileDTO profileDTO = MockUtils.mockProfileDTO();
+
+        // When
+        when(profileRepository.findById(1L)).thenReturn(Optional.empty());
+
+        // Then
+        ProfileDTO result = profileService.update(1L, profileDTO);
     }
 
 }

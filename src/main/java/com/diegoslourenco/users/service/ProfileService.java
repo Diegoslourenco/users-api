@@ -6,6 +6,7 @@ import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.exceptionHandler.ProfileNameNotUniqueException;
 import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.repository.ProfileRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -37,15 +38,11 @@ public class ProfileService {
         return profileDTOBuilder.buildList(profiles);
     }
 
-    public ProfileDTO getById(Long id) {
+    public ProfileDTO getOne(Long id) {
 
-        Optional<Profile> profileSaved = profileRepository.findById(id);
+        Profile profileSaved = getById(id);
 
-        if (!profileSaved.isPresent()) {
-            throw new EmptyResultDataAccessException(1);
-        }
-
-        return profileDTOBuilder.build(profileSaved.get());
+        return profileDTOBuilder.build(profileSaved);
     }
 
     public Long save(ProfileDTO dto) {
@@ -61,7 +58,35 @@ public class ProfileService {
         return profileSaved.getId();
     }
 
+    public ProfileDTO update(Long id, ProfileDTO dto) {
+
+        if (!checkUniqueName(dto)) {
+            throw new ProfileNameNotUniqueException();
+        }
+
+        Profile profileSaved = this.getById(id);
+
+        BeanUtils.copyProperties(dto, profileSaved, "id");
+
+        Profile profileUpdated = profileRepository.save(profileSaved);
+
+        return profileDTOBuilder.build(profileUpdated);
+    }
+
+    private Profile getById(Long id) {
+
+        Optional<Profile> profileSaved = profileRepository.findById(id);
+
+        if (!profileSaved.isPresent()) {
+            throw new EmptyResultDataAccessException(1);
+        }
+
+        return profileSaved.get();
+    }
+
+
     private boolean checkUniqueName(ProfileDTO dto) {
+
         Optional<Profile> optionalProfile = profileRepository.getByName(dto.getName());
 
         if (optionalProfile.isPresent()) {
@@ -71,3 +96,5 @@ public class ProfileService {
         return true;
     }
 }
+
+

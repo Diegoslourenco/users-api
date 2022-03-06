@@ -2,7 +2,6 @@ package com.diegoslourenco.users.controller;
 
 import com.diegoslourenco.users.dto.ErrorDTO;
 import com.diegoslourenco.users.dto.ProfileDTO;
-import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.service.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -49,7 +48,7 @@ public class ProfileController {
                             schema = @Schema(implementation = ErrorDTO.class) )})})
     @GetMapping("/{id}")
     public ResponseEntity<ProfileDTO> getById(@PathVariable Long id) {
-        return new ResponseEntity<>(profileService.getById(id), HttpStatus.OK);
+        return new ResponseEntity<>(profileService.getOne(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Create a profile")
@@ -63,6 +62,22 @@ public class ProfileController {
     @PostMapping
     public ResponseEntity<Long> create(@Valid @RequestBody ProfileDTO dto) {
         return new ResponseEntity<>(profileService.save(dto), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Update a profile")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Profile updated",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ProfileDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class) )}),
+            @ApiResponse(responseCode = "404", description = "Resource not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class) )})})
+    @PutMapping("/{id}")
+    public ResponseEntity<ProfileDTO> update(@PathVariable Long id, @Valid @RequestBody ProfileDTO dto) {
+        return new ResponseEntity<>(profileService.update(id, dto), HttpStatus.OK);
     }
 
 
