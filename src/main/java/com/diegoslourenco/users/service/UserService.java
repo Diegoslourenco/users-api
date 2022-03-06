@@ -2,14 +2,14 @@ package com.diegoslourenco.users.service;
 
 import com.diegoslourenco.users.builder.UserBuilder;
 import com.diegoslourenco.users.builder.UserDTOBuilder;
-import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.dto.UserDTO;
 import com.diegoslourenco.users.exceptionHandler.EmailNotUniqueException;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.UserNotFoundException;
 import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.model.User;
 import com.diegoslourenco.users.repository.UserRepository;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class UserService {
         Optional<User> userSaved = userRepository.findById(id);
 
         if (!userSaved.isPresent()) {
-            throw new EmptyResultDataAccessException(1);
+            throw new UserNotFoundException(1);
         }
 
         return userSaved.get();
@@ -79,6 +79,28 @@ public class UserService {
         return userSaved.getId();
     }
 
+    public UserDTO update(Long id, UserDTO dto) {
+
+        Profile profile = profileService.getById(dto.getProfileId());
+
+        if (!this.checkUniqueName(dto)) {
+            throw new NameNotUniqueException();
+        }
+
+        if (!this.checkUniqueEmail(dto)) {
+            throw new EmailNotUniqueException();
+        }
+
+        User userSaved = this.getById(id);
+        userSaved.setProfile(profile);
+        userSaved.setName(dto.getName());
+        userSaved.setEmail(dto.getEmail());
+
+        User userUpdated = userRepository.save(userSaved);
+
+        return userDTOBuilder.build(userUpdated);
+    }
+
     private boolean checkUniqueName(UserDTO dto) {
 
         Optional<User> optionalUser = userRepository.getByName(dto.getName());
@@ -100,4 +122,5 @@ public class UserService {
 
         return true;
     }
+
 }

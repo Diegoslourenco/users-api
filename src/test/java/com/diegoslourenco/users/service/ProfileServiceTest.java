@@ -4,6 +4,7 @@ import com.diegoslourenco.users.builder.ProfileBuilder;
 import com.diegoslourenco.users.builder.ProfileDTOBuilder;
 import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.ProfileNotFoundException;
 import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.repository.ProfileRepository;
 import com.diegoslourenco.users.utils.MockUtils;
@@ -174,7 +175,7 @@ public class ProfileServiceTest {
         ProfileDTO result = profileService.update(1L, profileDTO);
     }
 
-    @Test(expected = EmptyResultDataAccessException.class)
+    @Test(expected = ProfileNotFoundException.class)
     public void updateNotFoundTest() {
 
         // Given

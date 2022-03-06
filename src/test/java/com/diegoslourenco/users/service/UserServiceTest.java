@@ -6,9 +6,10 @@ import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.dto.UserDTO;
 import com.diegoslourenco.users.exceptionHandler.EmailNotUniqueException;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.ProfileNotFoundException;
+import com.diegoslourenco.users.exceptionHandler.UserNotFoundException;
 import com.diegoslourenco.users.model.Profile;
 import com.diegoslourenco.users.model.User;
-import com.diegoslourenco.users.repository.ProfileRepository;
 import com.diegoslourenco.users.repository.UserRepository;
 import com.diegoslourenco.users.utils.MockUtils;
 import org.junit.Test;
@@ -17,7 +18,6 @@ import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -112,7 +112,7 @@ public class UserServiceTest {
         assertThat(result).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @Test(expected = EmptyResultDataAccessException.class)
+    @Test(expected = UserNotFoundException.class)
     public void getByIdNotFoundTest() {
 
         // When
@@ -139,6 +139,21 @@ public class UserServiceTest {
         // Then
         Long result = userService.save(userDTO);
         assertThat(result).isEqualTo(1L);
+    }
+
+    @Test(expected = ProfileNotFoundException.class)
+    public void createForNotFoundProfileTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+
+        // When
+        when(profileService.getById(any())).thenThrow(new ProfileNotFoundException(1));
+
+        // Then
+        Long result = userService.save(userDTO);
     }
 
     @Test(expected = NameNotUniqueException.class)
@@ -174,5 +189,88 @@ public class UserServiceTest {
         Long result = userService.save(userDTO);
     }
 
+    @Test
+    public void updateTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+
+        // When
+        when(profileService.getById(any())).thenReturn(profileMocked);
+        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.empty());
+        when(userRepository.getByEmail(userDTO.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.findById(any())).thenReturn(Optional.of(userMocked));
+        when(userRepository.save(any())).thenReturn(userMocked);
+
+        // Then
+        UserDTO result = userService.update(1L, userDTO);
+        assertThat(result).usingRecursiveComparison().isEqualTo(userDTO);
+    }
+
+    @Test(expected = ProfileNotFoundException.class)
+    public void updateForProfileNotFoundExceptionTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+
+        // When
+        when(profileService.getById(any())).thenThrow(new ProfileNotFoundException(1));
+
+        // Then
+        UserDTO result = userService.update(1L, userDTO);
+    }
+
+    @Test(expected = NameNotUniqueException.class)
+    public void updateForNameNotUniqueTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+
+        // When
+        when(profileService.getById(any())).thenReturn(profileMocked);
+        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.of(userMocked));
+
+        // Then
+        UserDTO result = userService.update(1L, userDTO);
+    }
+
+    @Test(expected = EmailNotUniqueException.class)
+    public void updateForEmailNotUniqueTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+        User userMocked = mockUser(1L, USER_NAME_DIEGO, USER_EMAIL_DIEGO, profileMocked);
+
+        // When
+        when(profileService.getById(any())).thenReturn(profileMocked);
+        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.empty());
+        when(userRepository.getByEmail(userDTO.getEmail())).thenReturn(Optional.of(userMocked));
+
+        // Then
+        UserDTO result = userService.update(1L, userDTO);
+    }
+
+    @Test(expected = UserNotFoundException.class)
+    public void updateForUserNotFoundExceptionTest() {
+
+        // Given
+        UserDTO userDTO = MockUtils.mockUserDTO();
+        Profile profileMocked = MockUtils.mockProfile(1L, PROFILE_NAME_ADMIN);
+
+        // When
+        when(profileService.getById(any())).thenReturn(profileMocked);
+        when(userRepository.getByName(userDTO.getName())).thenReturn(Optional.empty());
+        when(userRepository.getByEmail(userDTO.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.findById(any())).thenReturn(Optional.empty());
+
+        // Then
+        UserDTO result = userService.update(1L, userDTO);
+    }
 
 }

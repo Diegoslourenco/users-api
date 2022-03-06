@@ -1,1 +1,1 @@
-[{"message":"Resource not found","description":"org.springframework.dao.EmptyResultDataAccessException: Incorrect result size: expected 1, actual 0"}]
+[{"message":"Profile not found","description":"com.diegoslourenco.users.exceptionHandler.ProfileNotFoundException: Incorrect result size: expected 1, actual 0"}]

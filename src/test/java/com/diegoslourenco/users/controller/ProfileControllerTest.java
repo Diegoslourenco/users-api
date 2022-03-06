@@ -2,6 +2,7 @@ package com.diegoslourenco.users.controller;
 
 import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
+import com.diegoslourenco.users.exceptionHandler.ProfileNotFoundException;
 import com.diegoslourenco.users.service.ProfileService;
 import com.diegoslourenco.users.utils.MockUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -98,7 +98,7 @@ public class ProfileControllerTest {
         String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNotFound.json");
 
         // When
-        when(profileService.getOne(1L)).thenThrow(new EmptyResultDataAccessException(1));
+        when(profileService.getOne(1L)).thenThrow(new ProfileNotFoundException(1));
 
         // Then
         MvcResult mvcResult = mockMvc
@@ -213,7 +213,7 @@ public class ProfileControllerTest {
     }
 
     @Test
-    public void  updateResourceNotFoundTest() throws Exception {
+    public void  updateNotFoundTest() throws Exception {
 
         // Given
         String uri = "/profiles/1";
@@ -221,7 +221,7 @@ public class ProfileControllerTest {
         String expected = MockUtils.mockString("src/test/resources/json/profile/error/profileNotFound.json");
 
         // When
-        when(profileService.update(any(), any())).thenThrow(new EmptyResultDataAccessException(1));
+        when(profileService.update(any(), any())).thenThrow(new ProfileNotFoundException(1));
 
         // Then
         MvcResult mvcResult = mockMvc
@@ -234,6 +234,5 @@ public class ProfileControllerTest {
         assertThat(status).isEqualTo(HttpStatus.NOT_FOUND.value());
         assertThat(result).usingDefaultComparator().isEqualTo(expected);
     }
-
 
 }

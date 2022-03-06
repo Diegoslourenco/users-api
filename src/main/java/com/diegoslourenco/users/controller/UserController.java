@@ -1,7 +1,6 @@
 package com.diegoslourenco.users.controller;
 
 import com.diegoslourenco.users.dto.ErrorDTO;
-import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.dto.UserDTO;
 import com.diegoslourenco.users.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,7 +43,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "User found",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = UserDTO.class)) }),
-            @ApiResponse(responseCode = "404", description = "Resource not found",
+            @ApiResponse(responseCode = "404", description = "User not found",
                     content = { @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorDTO.class) )})})
     @GetMapping("/{id}")
@@ -54,14 +53,33 @@ public class UserController {
 
     @Operation(summary = "Create a user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "User created",
+            @ApiResponse(responseCode = "201", description = "User created",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ProfileDTO.class)) }),
+                            schema = @Schema(implementation = UserDTO.class)) }),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorDTO.class) )})})
+                            schema = @Schema(implementation = ErrorDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Profile not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class)) })})
     @PostMapping
     public ResponseEntity<Long> create(@Valid @RequestBody UserDTO dto) {
         return new ResponseEntity<>(userService.save(dto), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Update a user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserDTO.class)) }),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class) )}),
+            @ApiResponse(responseCode = "404", description = "User or Profile not found",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorDTO.class) )})})
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO dto) {
+        return new ResponseEntity<>(userService.update(id, dto), HttpStatus.OK);
     }
 }
