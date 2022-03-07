@@ -11,7 +11,7 @@ public class UserBuilder {
     public  User build(UserDTO dto, Profile profile) {
         User user = new User();
         user.setName(dto.getName());
-        user.setEmail(dto.getName());
+        user.setEmail(dto.getEmail());
         user.setProfile(profile);
         return user;
     }
