@@ -28,6 +28,6 @@ There are a group of unit tests for the API.
 
 ## Documentation
 
-There is documentation following OpenAPI 3 standard and can be accessed at [`http://localhost:8080/swagger-ui/index.html`](http://localhost:8080/swagger-ui/index.html) while the application is running.
+There is documentation following OpenAPI 3 standard that can be accessed at [`http://localhost:8080/swagger-ui/index.html`](http://localhost:8080/swagger-ui/index.html) while the application is running.
 
 
