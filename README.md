@@ -12,7 +12,7 @@ RESTful API built to manage users and profiles with a simple frontend for testin
 
 ### Frontend
 
-Run `ng serve` at the frontend folder and it will start running at `http://localhost:4200/`
+After clone the repository run `npm intall` and after all the instalations run `ng serve` at the usersApp folder inside frontend and it will start running at `http://localhost:4200/`
 
 ### Backend
 
