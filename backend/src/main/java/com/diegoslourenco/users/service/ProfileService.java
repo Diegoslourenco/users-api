@@ -103,7 +103,7 @@ public class ProfileService {
 
         Profile profileSaved = this.getById(id);
 
-        List<User> users = userRepository.getByProfile(profileSaved.getId());
+        List<User> users = userRepository.findAllByProfileId(profileSaved.getId());
 
         if (!users.isEmpty()) {
             throw new ProfileHasUsersException();

@@ -213,7 +213,7 @@ public class ProfileServiceTest {
 
         // When
         when(profileRepository.findById(any())).thenReturn(Optional.of(profileMocked));
-        when(userRepository.getByProfile(any())).thenReturn(users);
+        when(userRepository.findAllByProfileId(any())).thenReturn(users);
 
         // Then
         profileService.delete(1L);
