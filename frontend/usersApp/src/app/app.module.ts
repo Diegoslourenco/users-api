@@ -8,7 +8,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MenuComponent } from './_components/menu/menu.component';
 import { HomeComponent } from './_components/home/home.component';
-import { ProfileComponent } from './_components/profile/profile.component';
 
 import { ProfileService } from './_services/profile.service';
 
@@ -17,7 +16,6 @@ import { ProfileService } from './_services/profile.service';
     AppComponent,
     MenuComponent,
     HomeComponent,
-    ProfileComponent
   ],
   imports: [
     BrowserModule,
