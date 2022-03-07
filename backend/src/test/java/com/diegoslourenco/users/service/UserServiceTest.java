@@ -2,7 +2,6 @@ package com.diegoslourenco.users.service;
 
 import com.diegoslourenco.users.builder.UserBuilder;
 import com.diegoslourenco.users.builder.UserDTOBuilder;
-import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.dto.UserDTO;
 import com.diegoslourenco.users.exceptionHandler.EmailNotUniqueException;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;

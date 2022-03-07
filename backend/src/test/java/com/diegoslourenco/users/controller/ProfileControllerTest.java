@@ -4,7 +4,6 @@ import com.diegoslourenco.users.dto.ProfileDTO;
 import com.diegoslourenco.users.exceptionHandler.NameNotUniqueException;
 import com.diegoslourenco.users.exceptionHandler.ProfileHasUsersException;
 import com.diegoslourenco.users.exceptionHandler.ProfileNotFoundException;
-import com.diegoslourenco.users.exceptionHandler.UserNotFoundException;
 import com.diegoslourenco.users.service.ProfileService;
 import com.diegoslourenco.users.utils.MockUtils;
 import org.junit.jupiter.api.BeforeEach;
